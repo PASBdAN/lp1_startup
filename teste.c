@@ -11,6 +11,7 @@ int inserir_evento(
     char nome[100], data[20];
     scanf(" %s",nome);
     strcpy(evento[n].nome, nome);
+    printf("Insira uma data: ");
     scanf(" %s",data);
     strcpy(evento[n].data, data);
     n++;
