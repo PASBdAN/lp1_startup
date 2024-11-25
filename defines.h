@@ -1,5 +1,3 @@
-
-
 struct Evento{
     int codigo;
     char nome[100];

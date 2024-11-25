@@ -64,7 +64,3 @@ int navigate_menu(
         }
     }
 };
-
-struct Evento add_evento(){
-
-};

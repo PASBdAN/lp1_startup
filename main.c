@@ -11,29 +11,6 @@ void show_menu(Menu* menu);
 int navigate_menu(Menu* menu);
 
 void main(void){
-    // INICIALIZANDO ARRAY DE EVENTOS
-    char* events_list_title = "Eventos";
-    char* events_list_options_list[] = {"Voltar"};
-    int events_list_options_qnt = sizeof(events_list_options_list)/sizeof(events_list_options_list[0]);
-    MenuOption* events_list_options = malloc(sizeof(MenuOption)*events_list_options_qnt);
-    for(int i = 0; i < events_list_options_qnt; i++){
-        events_list_options[i].description = events_list_options_list[i];
-    };
-    events_list_options[0].menu_id = 1;
-    Menu* events_list_menu = malloc(sizeof(Menu));
-    events_list_menu = create_menu(6,events_list_title,events_list_options,events_list_options_qnt);
-
-    // INICIALIZANDO ARRAY DE PARTICIPANTES
-    char* participants_list_title = "Participantes";
-    char* participants_list_options_list[] = {"Voltar"};
-    int participants_list_options_qnt = sizeof(participants_list_options_list)/sizeof(participants_list_options_list[0]);
-    MenuOption* participants_list_options = malloc(sizeof(MenuOption)*participants_list_options_qnt);
-    for(int i = 0; i < participants_list_options_qnt; i++){
-        participants_list_options[i].description = participants_list_options_list[i];
-    };
-    participants_list_options[0].menu_id = 1;
-    Menu* participants_list_menu = malloc(sizeof(Menu));
-    participants_list_menu = create_menu(7,participants_list_title,participants_list_options,participants_list_options_qnt);
 
     // DEFININDO VARIÁVEIS PARA NAVEGAÇÃO DOS MENUS
     int current_menu_id = 1, current_selection = 0;
