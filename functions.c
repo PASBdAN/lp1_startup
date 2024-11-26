@@ -325,3 +325,53 @@ void edit_participant(struct Participante participants[], int index, int column)
             break;
     }
 }
+
+int search_participant_by_code(struct Participante participants[], int tamanho, int codigo){
+    for(int i = 0; i< tamanho;i++){
+        if(participants[i].codigo == codigo){
+            show_participant(participants[i]);
+            return i;
+        }
+    }
+    return 9999;
+};
+
+int search_participant_by_name(struct Participante participants[], int tamanho, char nome[]){
+    for(int i = 0; i< tamanho;i++){
+        if(strcmp(participants[i].nome,nome) == 0){
+            show_participant(participants[i]);
+            return i;
+        }
+    }
+    return 9999;
+};
+
+int search_participant_by_email(struct Participante participants[], int tamanho, char email[]){
+    for(int i = 0; i< tamanho;i++){
+        if(strcmp(participants[i].email,email) == 0){
+            show_participant(participants[i]);
+            return i;
+        }
+    }
+    return 9999;
+};
+
+int delete_participant(
+    struct Participante participants[],
+    int tamanho_participants,
+    int index,
+    struct Evento events[],
+    int tamanho_events
+){
+
+    int event_index = search_event_by_code(events,tamanho_events,participants[index].eventoCodigo);
+    if((events[event_index].vagasDisponiveis != events[event_index].vagas) && (event_index!=9999)){
+        events[event_index].vagasDisponiveis++;
+    }
+    
+    for(int i = index; i < tamanho_participants; i ++){
+        participants[i] = participants[i+1];
+    }
+    tamanho_participants--;
+    return tamanho_participants;
+}

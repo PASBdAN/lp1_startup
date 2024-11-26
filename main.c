@@ -48,7 +48,7 @@ void main(void){
     char escolha = 'n';
 
     // CRIANDO AS DECRICOES DE CADA MENU EM ORDEM
-    char* all_titles[] = {
+    char* all_titles[MAX_MENU_QNT] = {
         "Menu Principal",
         "Menu de Eventos",
         "Menu de Participantes",
@@ -57,8 +57,9 @@ void main(void){
         "O que deseja fazer com o evento encontrado?",
         "O que voce deseja editar?",
         "Listar Participantes",
-        "Consultar Participante",
-        "O que deseja fazer com o participante selecionado?"
+        "Buscar Participante",
+        "O que deseja fazer com o participante selecionado?",
+        "O que voce deseja editar?"
     };
 
     // CRIANDO AS OPCOES DE CADA MENU EM ORDEM
@@ -71,8 +72,9 @@ void main(void){
         {"Deletar evento", "Editar evento", "Voltar"},
         {"Nome", "Data", "Local", "Categoria", "Vagas", "Voltar"},
         {"Listar todos os participantes","Filtrar por evento","Filtrar por instituicao","Voltar"},
-        {"Consultar por codigo","Consultar por nome","Consultar por email"},
-        {"Cancelar inscricao do participante","Editar dados do participante","Trocar evento do participante","Voltar"}
+        {"Consultar por codigo","Consultar por nome","Consultar por email","Voltar"},
+        {"Cancelar inscricao do participante","Editar dados do participante","Trocar evento do participante","Voltar"},
+        {"Nome", "Email", "Instituicao", "Voltar"}
     };
     
     // DEFININDO A QUANTIDADE DE OPCOES POR MENU
@@ -171,7 +173,8 @@ void main(void){
                         show_menu(&all_menus[7]);
                         break;
                     case 2: // NAVEGA PARA O MENU DE BUSCAR PARTICIPANTE
-                        printf("Consultar um participante\n");
+                        current_menu_id = all_menus[8].id;
+                        show_menu(&all_menus[8]);
                         break;
                     case 3: // NAVEGA PARA O MENU PRINCIPAL
                         current_menu_id = all_menus[0].id;
@@ -318,7 +321,104 @@ void main(void){
                         break;
                 }
                 break;
-
+            
+            case 9: // MOSTRA MENU DE CONSULTAR PARTICIPANTE
+                current_selection = navigate_menu(
+                    &all_menus[current_menu_id-1]
+                );
+                // {"Consultar por codigo","Consultar por nome","Consultar por email","Voltar"}
+                switch(current_selection) {
+                    case 0: // Consultar por codigo
+                        int codigo;
+                        printf("Insira o codigo do participante: ");
+                        scanf(" %d",&codigo);
+                        current_participant_index = search_participant_by_code(participants, ultima_posicao_participante,codigo);
+                        if(current_participant_index!=9999){
+                            current_menu_id = all_menus[9].id;
+                            show_menu(&all_menus[9]);
+                            printf("Participante encontrado: ");
+                            show_participant(participants[current_participant_index]);
+                        } else {
+                            printf("Nao foi encontrado nenhum evento com esse nome!\n");
+                        };
+                        break;
+                    case 1: // Consultar por nome
+                        char nome[100];
+                        printf("Insira o nome do participante: ");
+                        scanf(" %s",nome);
+                        current_participant_index = search_participant_by_name(participants, ultima_posicao_participante,nome);
+                        if(current_participant_index!=9999){
+                            current_menu_id = all_menus[9].id;
+                            show_menu(&all_menus[9]);
+                            printf("Participante encontrado: ");
+                            show_participant(participants[current_participant_index]);
+                        } else {
+                            printf("Nao foi encontrado nenhum evento com esse nome!\n");
+                        };
+                        break;
+                    case 2: // Consultar por email
+                        char email[100];
+                        printf("Insira o email do participante: ");
+                        scanf(" %s",email);
+                        current_participant_index = search_participant_by_email(participants, ultima_posicao_participante,email);
+                        if(current_participant_index!=9999){
+                            current_menu_id = all_menus[9].id;
+                            show_menu(&all_menus[9]);
+                            printf("Participante encontrado: ");
+                            show_participant(participants[current_participant_index]);
+                        } else {
+                            printf("Nao foi encontrado nenhum evento com esse email!\n");
+                        };
+                        break;
+                    case 3: // Voltar
+                        current_menu_id = all_menus[2].id;
+                        show_menu(&all_menus[2]);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case 10: // MOSTRA MENU DE EDITAR PARTICIPANTE
+                current_selection = navigate_menu(
+                    &all_menus[current_menu_id-1]
+                );
+                //{"Cancelar inscricao do participante","Editar dados do participante","Trocar evento do participante","Voltar"}
+                switch(current_selection) {
+                    case 0: // Cancelar inscricao do participante
+                        delete_participant(participants,ultima_posicao_participante,current_participant_index,events,ultima_posicao_evento);
+                        ultima_posicao_participante--;
+                        current_menu_id = all_menus[9].id;
+                        show_menu(&all_menus[9]);
+                        break;
+                    case 1: // Editar dados do participante
+                        current_menu_id = all_menus[10].id;
+                        show_menu(&all_menus[10]);
+                        break;
+                    case 2: // Trocar evento do participante
+                        break;
+                    case 3: // Voltar
+                        current_menu_id = all_menus[2].id;
+                        show_menu(&all_menus[2]);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case 11: // MOSTRA MENU DE EDITAR DADOS DO PARTICIPANTE
+                current_selection = navigate_menu(
+                    &all_menus[current_menu_id-1]
+                );
+                //{"Nome", "Email", "Instituicao", "Voltar"}
+                if(current_selection == 3){
+                    current_menu_id = all_menus[9].id;
+                    show_menu(&all_menus[9]);
+                    printf("Participante removido com sucesso!\n");
+                    break;
+                }
+                show_participant(participants[current_participant_index]);
+                edit_participant(participants, current_participant_index, current_selection);
+                printf("Coluna editada com sucesso!\n");
+                
             default:
                 break;
         }
