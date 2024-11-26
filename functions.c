@@ -299,28 +299,40 @@ void list_participants(
     }
 };
 
-void edit_participant(struct Participante participants[], int index, int column){
+void edit_participant(struct Participante participants[], int index, int column, struct Evento events[], int tamanho_events){
     char nome[100], email[100], instituicao[100];
     int eventoCodigo;
     switch(column){
         case 0:
-            printf("Insira o novo nome: ");
+            printf("Insira o novo nome do participante: ");
             scanf(" %s", nome);
             strcpy(participants[index].nome,nome);
             break;
         case 1:
-            printf("Insira a nova email: ");
+            printf("Insira o novo email do participante: ");
             scanf(" %s", email);
             strcpy(participants[index].email,email);
             break;
         case 2:
-            printf("Insira o novo instituicao: ");
+            printf("Insira a nova instituicao do participante: ");
             scanf(" %s", instituicao);
             strcpy(participants[index].instituicao,instituicao);
             break;
         case 3:
-            printf("Insira o codigo do novo evento: ");
+            printf("Insira o codigo do novo evento do participante: ");
             scanf(" %d", &eventoCodigo);
+            int event_index = search_event_by_code(events,tamanho_events,eventoCodigo);
+            if(event_index==9999){
+                printf("O evento solicitado não existe!\n");
+            } else {
+                if(events[event_index].vagasDisponiveis == 0) {
+                    printf("Na ha vagas disponiveis para este eventos!\n");
+                } else {
+                    events[event_index].vagasDisponiveis--;
+                    event_index = search_event_by_code(events,tamanho_events,participants[index].eventoCodigo);
+                    events[event_index].vagasDisponiveis++;
+                }
+            }
             participants[index].eventoCodigo = eventoCodigo;
             break;
     }

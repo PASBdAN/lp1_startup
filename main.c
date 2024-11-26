@@ -387,7 +387,6 @@ void main(void){
                     case 0: // Cancelar inscricao do participante
                         delete_participant(participants,ultima_posicao_participante,current_participant_index,events,ultima_posicao_evento);
                         ultima_posicao_participante--;
-                        current_menu_id = all_menus[9].id;
                         show_menu(&all_menus[9]);
                         break;
                     case 1: // Editar dados do participante
@@ -395,6 +394,10 @@ void main(void){
                         show_menu(&all_menus[10]);
                         break;
                     case 2: // Trocar evento do participante
+                        show_participant(participants[current_participant_index]);
+                        edit_participant(participants, current_participant_index, 3,events,ultima_posicao_evento);
+                        show_menu(&all_menus[9]);
+                        printf("O evento do participante foi trocado com sucesso!\n");
                         break;
                     case 3: // Voltar
                         current_menu_id = all_menus[2].id;
@@ -416,7 +419,7 @@ void main(void){
                     break;
                 }
                 show_participant(participants[current_participant_index]);
-                edit_participant(participants, current_participant_index, current_selection);
+                edit_participant(participants, current_participant_index, current_selection,NULL,0);
                 printf("Coluna editada com sucesso!\n");
                 
             default:
