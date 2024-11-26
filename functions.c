@@ -140,6 +140,9 @@ void listar_eventos(
     struct  Evento evento[],
     int n    
 ){
+    if(n==0){
+        printf("Nao tem nenhum evento cadastrado!\n");
+    }
     for(int i = 0; i < n; i++){
         mostrar_evento(evento[i]);
     }
@@ -171,14 +174,49 @@ int buscar_evento_por_nome(struct Evento eventos[], int tamanho){
     return 9999;
 };
 
+char editar_evento(struct Evento eventos[], int index, int column){
+    char nome[100], data[20], local[100], categoria[50], escolha;
+    int vagas;
+    switch(column){
+        case 0:
+            printf("Insira o novo nome: ");
+            scanf(" %s", nome);
+            strcpy(eventos[index].nome,nome);
+            break;
+        case 1:
+            printf("Insira a nova data: ");
+            scanf(" %s", data);
+            strcpy(eventos[index].data,data);
+            break;
+        case 2:
+            printf("Insira o novo local: ");
+            scanf(" %s", local);
+            strcpy(eventos[index].local,local);
+            break;
+        case 3:
+            printf("Insira a nova categoria: ");
+            scanf(" %s", categoria);
+            strcpy(eventos[index].categoria,categoria);
+            break;
+        case 4:
+            printf("Insira a nova quantidade de vagas: ");
+            scanf(" %d", &vagas);
+            eventos[index].vagas = vagas;
+            break;
+    }
+    printf("Deseja editar mais alguma coisa? (s/n) ");
+    scanf(" %c", &escolha);
+    return escolha;
+}
+
 int deletar_evento(
     struct Evento eventos[],
     int index,
-    int n
+    int tamanho
 ){
-    for(int i = index; i < n; i ++){
+    for(int i = index; i < tamanho; i ++){
         eventos[i] = eventos[i+1];
     }
-    n--;
-    return n;
+    tamanho--;
+    return tamanho;
 }

@@ -24,6 +24,8 @@ void mostrar_evento(struct Evento evento);
 
 void listar_eventos(struct Evento eventos[],int n);
 
+#define MAX_OPTIONS 10
+
 void main(void){
 
     // DEFININDO VARIÁVEIS DE EVENTOS
@@ -40,84 +42,75 @@ void main(void){
 
     // DEFININDO VARIÁVEIS PARA NAVEGAÇÃO DOS MENUS
     int current_menu_id = 1, current_selection = 0;
+    char escolha = 'n';
 
+    // CRIANDO AS OPCOES DE CADA MENU EM ORDEM
+    char* all_options[7][MAX_OPTIONS] = {
+        {"Modulo de eventos", "Modulo de participantes", "Modulo de relatorios", "Fechar programa"},
+        {"Cadastrar novo evento", "Listar eventos", "Buscar evento", "Voltar"},
+        {"Inscrever participante em um evento", "Listar participantes de um evento", "Cancelar inscricao", "Consultar CPF/Codigo", "Voltar"},
+        {"Ranquear eventos por numero de inscritos", "Participantes por instituicao", "Listar eventos por categoria", "Listar eventos ordenados por data", "Voltar"},
+        {"Buscar por nome", "Buscar por codigo", "Voltar"},
+        {"Deletar evento", "Editar evento", "Voltar"},
+        {"Nome", "Data", "Local", "Categoria", "Vagas", "Voltar"}
+    };
 
-    // CRIANDO AS OPCOES DO MENU PRINCIPAL
-    char* main_options_list[] = {"Modulo de eventos", "Modulo de participantes", "Modulo de relatorios", "Fechar programa"};
-    int main_options_qnt = sizeof(main_options_list)/sizeof(main_options_list[0]);
-    MenuOption* main_options = create_menu_options(main_options_list, main_options_qnt);
-    // CRIANDO O MENU PRINCIPAL
-    Menu* main_menu = malloc(sizeof(Menu));
-    char* main_title = "Menu Principal";
-    main_menu = create_menu(1,main_title,main_options,main_options_qnt);
+    // CRIANDO AS DECRICOES DE CADA MENU EM ORDEM
+    char* all_titles[] = {
+        "Menu Principal",
+        "Menu de Eventos",
+        "Menu de Participantes",
+        "Menu de Relatorios",
+        "Buscar Eventos",
+        "O que deseja fazer com o evento encontrado?",
+        "O que voce deseja editar?"
+    };
+    
+    // DEFININDO A QUANTIDADE DE OPCOES POR MENU
+    int menu_qnt = sizeof(all_titles)/sizeof(all_titles[0]);
+    int *options_quantities = malloc(menu_qnt*sizeof(int));
+    // options_quantities = {4,4,5,5,3,3,6};
+    for(int i = 0; i < menu_qnt; i++){
+        for(int j = 0; j<MAX_OPTIONS;j++){
+            if(all_options[i][j]==NULL){
+                options_quantities[i] = j;
+                break;
+            }
+        }
+    }
 
-    // CRIANDO AS OPCOES MENU DE EVENTOS
-    char* events_options_list[] = {"Cadastrar novo evento", "Listar eventos", "Buscar evento", "Voltar"};
-    int events_options_qnt = sizeof(events_options_list)/sizeof(events_options_list[0]);
-    MenuOption* events_options = create_menu_options(events_options_list, events_options_qnt);
-    // CRIANDO O MENU DE EVENTOS
-    Menu* events_menu = malloc(sizeof(Menu));
-    char* events_title = "Menu de Eventos";
-    events_menu = create_menu(2,events_title,events_options,events_options_qnt);
-
-    // CRIANDO AS OPCOES DO MENU DE PARTICIPANTES
-    char* participants_options_list[] = {"Inscrever participante em um evento", "Listar participantes de um evento", "Cancelar inscricao", "Consultar CPF/Codigo", "Voltar"};
-    int participants_options_qnt = sizeof(participants_options_list)/sizeof(participants_options_list[0]);
-    MenuOption* participants_options = create_menu_options(participants_options_list, participants_options_qnt);
-    // CRIANDO MENU DE PARTICIPANTES
-    Menu* participants_menu = malloc(sizeof(Menu));
-    char* participants_title = "Menu de Participantes";
-    participants_menu = create_menu(3,participants_title,participants_options,participants_options_qnt);
-
-    // CRIANDO AS OPCOES DO MENU DE RELATORIOS
-    char* reports_options_list[] = {"Ranquear eventos por numero de inscritos", "Participantes por instituicao", "Listar eventos por categoria", "Listar eventos ordenados por data", "Voltar"};
-    int reports_options_qnt = sizeof(reports_options_list)/sizeof(reports_options_list[0]);
-    MenuOption* reports_options = create_menu_options(reports_options_list, reports_options_qnt);
-    // CRIANDO MENU DE RELATORIOS
-    Menu* reports_menu = malloc(sizeof(Menu));
-    char* reports_title = "Menu de Relatórios";
-    reports_menu = create_menu(4,reports_title,reports_options,reports_options_qnt);
-
-    // CRIANDO AS OPCOES DO MENU DE BUSCA DE EVENTOS
-    char* events_search_options_list[] = {"Buscar por nome", "Buscar por codigo", "Voltar"};
-    int events_search_options_qnt = sizeof(events_search_options_list)/sizeof(events_search_options_list[0]);
-    MenuOption* events_search_options = create_menu_options(events_search_options_list, events_search_options_qnt);
-    // CRIANDO MENU DE BUSCA DE EVENTOS
-    Menu* events_search_menu = malloc(sizeof(Menu));
-    char* events_search_title = "Buscar Eventos";
-    events_search_menu = create_menu(5,events_search_title,events_search_options,events_search_options_qnt);
-
-    // CRIANDO AS OPCOES DO MENU DE DELETAR OU EDITAR EVENTO
-    char* events_del_upd_options_list[] = {"Deletar evento", "Editar evento", "Voltar"};
-    int events_del_upd_options_qnt = sizeof(events_del_upd_options_list)/sizeof(events_del_upd_options_list[0]);
-    MenuOption* events_del_upd_options = create_menu_options(events_del_upd_options_list, events_del_upd_options_qnt);
-    // CRIANDO MENU DE DELETAR OU EDITAR EVENTO
-    Menu* events_del_upd_menu = malloc(sizeof(Menu));
-    char* events_del_upd_title = "O que deseja fazer com o evento encontrado?";
-    events_del_upd_menu = create_menu(6,events_del_upd_title,events_del_upd_options,events_del_upd_options_qnt);
-
+    // ALOCANDO E CRIANDO OS MENUS CONFORME AS VARIAVEIS E DEFINICOES ANTERIORES
+    Menu* all_menus = malloc(sizeof(Menu)*menu_qnt);
+    for(int i = 0; i <= menu_qnt; i++){
+        all_menus[i] = *create_menu(
+            i+1,
+            all_titles[i],
+            create_menu_options(all_options[i],options_quantities[i]),
+            options_quantities[i]
+        );
+    };
 
     // MONSTRANDO MENU PRINCIPAL E INICIANDO LOOP DE NAVEGAÇÃO
-    show_menu(main_menu);
+    show_menu(&all_menus[0]);
     while(current_menu_id != 0){
         switch (current_menu_id){
 
             case 1: // MOSTRA MENU PRINCIPAL
                 current_selection = navigate_menu(
-                    main_menu
+                    &all_menus[current_menu_id-1]
                 );
                 switch(current_selection){
                     case 0: // NAVEGA PARA MENU DE EVENTOS
-                        current_menu_id = events_menu->id;
-                        show_menu(events_menu);
+                        current_menu_id = all_menus[1].id;
+                        show_menu(&all_menus[1]);
                         break;
                     case 1: // NAVEGA PARA MENU DE PARTICIPANTES
-                        current_menu_id = participants_menu->id;
-                        show_menu(participants_menu);
+                        current_menu_id = all_menus[2].id;
+                        show_menu(&all_menus[2]);
                         break;
                     case 2: // NAVEGA PARA MENU DE RELATÓRIOS
-                        current_menu_id = reports_menu->id;
-                        show_menu(reports_menu);
+                        current_menu_id = all_menus[3].id;
+                        show_menu(&all_menus[3]);
                         break;
                     case 3: // TERMINA O PROGRAMA
                         current_menu_id = 0;
@@ -127,25 +120,25 @@ void main(void){
 
             case 2: // MOSTRA MENU DE EVENTOS
                 current_selection = navigate_menu(
-                    events_menu
+                    &all_menus[current_menu_id-1]
                 );
                 switch (current_selection){
                     case 0: // CADASTRAR EVENTOS
                         ultima_posicao_evento = inserir_evento(eventos,ultima_posicao_evento);
-                        show_menu(events_menu);
+                        show_menu(&all_menus[1]);
                         printf("Evento criado com sucesso!\n");
                         break;
                     case 1: // LISTAR TODOS OS EVENTOS
-                        show_menu(events_menu);
+                        show_menu(&all_menus[1]);
                         listar_eventos(eventos,ultima_posicao_evento);
                         break;
                     case 2: // BUSCAR UM EVENTO
-                        current_menu_id = events_search_menu->id;
-                        show_menu(events_search_menu);
+                        current_menu_id = all_menus[4].id;
+                        show_menu(&all_menus[4]);
                         break;
                     case 3: // NAVEGA PARA O MENU PRINCIPAL
-                        current_menu_id = main_menu->id;
-                        show_menu(main_menu);
+                        current_menu_id = all_menus[0].id;
+                        show_menu(&all_menus[0]);
                         break;
                     default:
                         break;
@@ -154,7 +147,7 @@ void main(void){
 
             case 3: // MOSTRA MENU DE PARTICIPANTES
                 current_selection = navigate_menu(
-                    participants_menu
+                    &all_menus[current_menu_id-1]
                 );
                 switch (current_selection){
                     case 0:
@@ -170,8 +163,8 @@ void main(void){
                         printf("Consultar inscricao por CPF/codigo\n");
                         break;
                     case 4: // NAVEGA PARA O MENU PRINCIPAL
-                        current_menu_id = main_menu->id;
-                        show_menu(main_menu);
+                        current_menu_id = all_menus[0].id;
+                        show_menu(&all_menus[0]);
                         break;
                     default:
                         break;
@@ -180,7 +173,7 @@ void main(void){
 
             case 4: // MOSTRA MENU DE RELATÓRIOS
                 current_selection = navigate_menu(
-                    reports_menu
+                    &all_menus[current_menu_id-1]
                 );
                 switch (current_selection){
                     case 0:
@@ -196,8 +189,8 @@ void main(void){
                         printf("Eventos proximos\n");
                         break;
                     case 4: // NAVEGA PARA O MENU PRINCIPAL
-                        current_menu_id = main_menu->id;
-                        show_menu(main_menu);
+                        current_menu_id = all_menus[0].id;
+                        show_menu(&all_menus[0]);
                         break;
                     default:
                         break;
@@ -206,14 +199,14 @@ void main(void){
 
             case 5: // MOSTRA MENU DE BUSCA DE EVENTOS
                 current_selection = navigate_menu(
-                    events_search_menu
+                    &all_menus[current_menu_id-1]
                 );
                 switch (current_selection){
                     case 0:
                         current_event_index = buscar_evento_por_nome(eventos, ultima_posicao_evento);
                         if(current_event_index!=9999){
-                            current_menu_id = events_del_upd_menu->id;
-                            show_menu(events_del_upd_menu);
+                            current_menu_id = all_menus[5].id;
+                            show_menu(&all_menus[5]);
                             printf("Evento encontrado: ");
                             mostrar_evento(eventos[current_event_index]);
                         } else {
@@ -223,8 +216,8 @@ void main(void){
                     case 1:
                         current_event_index = buscar_evento_por_codigo(eventos, ultima_posicao_evento);
                         if(current_event_index!=9999){
-                            current_menu_id = events_del_upd_menu->id;
-                            show_menu(events_del_upd_menu);
+                            current_menu_id = all_menus[5].id;
+                            show_menu(&all_menus[5]);
                             printf("Evento encontrado: ");
                             mostrar_evento(eventos[current_event_index]);
                         } else{
@@ -232,8 +225,8 @@ void main(void){
                         };
                         break;
                     case 2: // NAVEGA PARA O MENU DE EVENTOS
-                        current_menu_id = events_menu->id;
-                        show_menu(events_menu);
+                        current_menu_id = all_menus[1].id;
+                        show_menu(&all_menus[1]);
                         break;
                     default:
                         break;
@@ -242,27 +235,45 @@ void main(void){
 
             case 6: // MOSTRA MENU DE DELETAR OU EDITAR EVENTO
                 current_selection = navigate_menu(
-                    events_del_upd_menu
+                    &all_menus[current_menu_id-1]
                 );
                 mostrar_evento(eventos[current_event_index]);
                 switch (current_selection){
                     case 0:
                         deletar_evento(eventos,current_event_index,ultima_posicao_evento);
                         ultima_posicao_evento--;
-                        current_menu_id = events_search_menu->id;
-                        show_menu(events_search_menu);
+                        current_menu_id = all_menus[4].id;
+                        show_menu(&all_menus[4]);
                         break;
                     case 1:
-                        printf("Editar um evento\n");
+                        current_menu_id = all_menus[6].id;
+                        show_menu(&all_menus[6]);
                         break;
                     case 2: // NAVEGA PARA O MENU DE BUSCA DE EVENTOS
-                        current_menu_id = events_search_menu->id;
-                        show_menu(events_search_menu);
+                        current_menu_id = all_menus[4].id;
+                        show_menu(&all_menus[4]);
                         break;
                     default:
                         break;
                 }
                 break;
+
+            case 7: // MOSTRA MENU DE DELETAR OU EDITAR EVENTO
+                current_selection = navigate_menu(
+                    &all_menus[current_menu_id-1]
+                );
+                if(current_selection == 5){
+                    current_menu_id = all_menus[5].id;
+                    show_menu(&all_menus[5]);
+                    break;
+                }
+                mostrar_evento(eventos[current_event_index]);
+                escolha = editar_evento(eventos, current_event_index, current_selection);
+                if(escolha=='s'){
+                    current_menu_id = all_menus[6].id;
+                    show_menu(&all_menus[6]);
+                    break;
+                }
             
             default:
                 break;
