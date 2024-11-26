@@ -6,11 +6,19 @@
 
 Menu* create_menu(int id,char* title, MenuOption* options, int options_size);
 
+MenuOption* create_menu_options(char* options_list[],int options_qnt);
+
 void show_menu(Menu* menu);
 
 int navigate_menu(Menu* menu);
 
-int inserir_evento(struct Evento evento[], int n);
+int inserir_evento(struct Evento eventos[], int n);
+
+int buscar_evento_por_nome(struct Evento eventos[], int tamanho);
+
+int buscar_evento_por_codigo(struct Evento eventos[], int tamanho);
+
+int deletar_evento(struct Evento eventos[], int index, int tamanho);
 
 void mostrar_evento(struct Evento evento);
 
@@ -38,10 +46,6 @@ void main(void){
     char* main_options_list[] = {"Modulo de eventos", "Modulo de participantes", "Modulo de relatorios", "Fechar programa"};
     int main_options_qnt = sizeof(main_options_list)/sizeof(main_options_list[0]);
     MenuOption* main_options = create_menu_options(main_options_list, main_options_qnt);
-    main_options[0].menu_id = 2;
-    main_options[1].menu_id = 3;
-    main_options[2].menu_id = 4;
-    main_options[3].menu_id = 0;
     // CRIANDO O MENU PRINCIPAL
     Menu* main_menu = malloc(sizeof(Menu));
     char* main_title = "Menu Principal";
@@ -51,8 +55,6 @@ void main(void){
     char* events_options_list[] = {"Cadastrar novo evento", "Listar eventos", "Buscar evento", "Voltar"};
     int events_options_qnt = sizeof(events_options_list)/sizeof(events_options_list[0]);
     MenuOption* events_options = create_menu_options(events_options_list, events_options_qnt);
-    events_options[2].menu_id = 5;
-    events_options[3].menu_id = 1;
     // CRIANDO O MENU DE EVENTOS
     Menu* events_menu = malloc(sizeof(Menu));
     char* events_title = "Menu de Eventos";
@@ -62,7 +64,6 @@ void main(void){
     char* participants_options_list[] = {"Inscrever participante em um evento", "Listar participantes de um evento", "Cancelar inscricao", "Consultar CPF/Codigo", "Voltar"};
     int participants_options_qnt = sizeof(participants_options_list)/sizeof(participants_options_list[0]);
     MenuOption* participants_options = create_menu_options(participants_options_list, participants_options_qnt);
-    participants_options[4].menu_id = 1;
     // CRIANDO MENU DE PARTICIPANTES
     Menu* participants_menu = malloc(sizeof(Menu));
     char* participants_title = "Menu de Participantes";
@@ -72,7 +73,6 @@ void main(void){
     char* reports_options_list[] = {"Ranquear eventos por numero de inscritos", "Participantes por instituicao", "Listar eventos por categoria", "Listar eventos ordenados por data", "Voltar"};
     int reports_options_qnt = sizeof(reports_options_list)/sizeof(reports_options_list[0]);
     MenuOption* reports_options = create_menu_options(reports_options_list, reports_options_qnt);
-    reports_options[4].menu_id = 1;
     // CRIANDO MENU DE RELATORIOS
     Menu* reports_menu = malloc(sizeof(Menu));
     char* reports_title = "Menu de Relatórios";
@@ -82,9 +82,6 @@ void main(void){
     char* events_search_options_list[] = {"Buscar por nome", "Buscar por codigo", "Voltar"};
     int events_search_options_qnt = sizeof(events_search_options_list)/sizeof(events_search_options_list[0]);
     MenuOption* events_search_options = create_menu_options(events_search_options_list, events_search_options_qnt);
-    events_search_options[0].menu_id = 6;
-    events_search_options[1].menu_id = 6;
-    events_search_options[2].menu_id = 1;
     // CRIANDO MENU DE BUSCA DE EVENTOS
     Menu* events_search_menu = malloc(sizeof(Menu));
     char* events_search_title = "Buscar Eventos";
@@ -94,7 +91,6 @@ void main(void){
     char* events_del_upd_options_list[] = {"Deletar evento", "Editar evento", "Voltar"};
     int events_del_upd_options_qnt = sizeof(events_del_upd_options_list)/sizeof(events_del_upd_options_list[0]);
     MenuOption* events_del_upd_options = create_menu_options(events_del_upd_options_list, events_del_upd_options_qnt);
-    events_del_upd_options[2].menu_id = 1;
     // CRIANDO MENU DE DELETAR OU EDITAR EVENTO
     Menu* events_del_upd_menu = malloc(sizeof(Menu));
     char* events_del_upd_title = "O que deseja fazer com o evento encontrado?";
@@ -135,8 +131,9 @@ void main(void){
                 );
                 switch (current_selection){
                     case 0: // CADASTRAR EVENTOS
-                        show_menu(events_menu);
                         ultima_posicao_evento = inserir_evento(eventos,ultima_posicao_evento);
+                        show_menu(events_menu);
+                        printf("Evento criado com sucesso!\n");
                         break;
                     case 1: // LISTAR TODOS OS EVENTOS
                         show_menu(events_menu);
@@ -216,13 +213,23 @@ void main(void){
                         current_event_index = buscar_evento_por_nome(eventos, ultima_posicao_evento);
                         if(current_event_index!=9999){
                             current_menu_id = events_del_upd_menu->id;
-                        }
+                            show_menu(events_del_upd_menu);
+                            printf("Evento encontrado: ");
+                            mostrar_evento(eventos[current_event_index]);
+                        } else {
+                            printf("Nao foi encontrado nenhum evento com esse nome!\n");
+                        };
                         break;
                     case 1:
                         current_event_index = buscar_evento_por_codigo(eventos, ultima_posicao_evento);
                         if(current_event_index!=9999){
                             current_menu_id = events_del_upd_menu->id;
-                        }
+                            show_menu(events_del_upd_menu);
+                            printf("Evento encontrado: ");
+                            mostrar_evento(eventos[current_event_index]);
+                        } else{
+                            printf("Nao foi encontrado nenhum evento com esse codigo!\n");
+                        };
                         break;
                     case 2: // NAVEGA PARA O MENU DE EVENTOS
                         current_menu_id = events_menu->id;

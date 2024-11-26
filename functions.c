@@ -120,7 +120,6 @@ int inserir_evento(
     
     n++;
 
-    printf("Evento criado com sucesso! (Pressione qualquer tecla para continuar)\n");
     return n;
 };
 
@@ -152,12 +151,10 @@ int buscar_evento_por_codigo(struct Evento eventos[], int tamanho){
     scanf(" %d",&codigo);
     for(int i = 0; i< tamanho;i++){
         if(eventos[i].codigo == codigo){
-            printf("Evento encontrado:\n");
             mostrar_evento(eventos[i]);
             return i;
         }
     }
-    printf("Nao foi encontrado nenhum evento com esse codigo!\n");
     return 9999;
 };
 
@@ -167,22 +164,20 @@ int buscar_evento_por_nome(struct Evento eventos[], int tamanho){
     scanf(" %s",nome);
     for(int i = 0; i< tamanho;i++){
         if(strcmp(eventos[i].nome,nome) == 0){
-            printf("Evento encontrado:\n");
             mostrar_evento(eventos[i]);
             return i;
         }
     }
-    printf("Nao foi encontrado nenhum evento com esse nome!\n");
     return 9999;
 };
 
 int deletar_evento(
-    struct Evento evento[],
+    struct Evento eventos[],
     int index,
     int n
 ){
     for(int i = index; i < n; i ++){
-        evento[i] = evento[i+1];
+        eventos[i] = eventos[i+1];
     }
     n--;
     return n;
