@@ -174,8 +174,8 @@ int buscar_evento_por_nome(struct Evento eventos[], int tamanho){
     return 9999;
 };
 
-char editar_evento(struct Evento eventos[], int index, int column){
-    char nome[100], data[20], local[100], categoria[50], escolha;
+void editar_evento(struct Evento eventos[], int index, int column){
+    char nome[100], data[20], local[100], categoria[50];
     int vagas;
     switch(column){
         case 0:
@@ -204,9 +204,6 @@ char editar_evento(struct Evento eventos[], int index, int column){
             eventos[index].vagas = vagas;
             break;
     }
-    printf("Deseja editar mais alguma coisa? (s/n) ");
-    scanf(" %c", &escolha);
-    return escolha;
 }
 
 int deletar_evento(
