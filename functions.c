@@ -80,14 +80,14 @@ int navigate_menu(
 
 int insert_event(
     struct Evento evento[],
-    int n
+    int tamanho_events
 ){
     char nome[100], data[20];
     char local[100], categoria[50];
     int vagas, vagasDisponiveis, codigo = 0;
 
     // LOOP PARA INSERIR UM CODIGO UNICO
-    for(int i = 0; i < n; i++){
+    for(int i = 0; i < tamanho_events; i++){
         if(evento[i].codigo >= codigo){
             codigo = evento[i].codigo;
         }
@@ -96,31 +96,31 @@ int insert_event(
 
     printf("Insira um nome: ");
     scanf(" %s",nome);
-    strcpy(evento[n].nome, nome);
+    strcpy(evento[tamanho_events].nome, nome);
 
     printf("Insira uma data: ");
     scanf(" %s",data);
-    strcpy(evento[n].data, data);
+    strcpy(evento[tamanho_events].data, data);
 
     printf("Insira o local: ");
     scanf(" %s",local);
-    strcpy(evento[n].local, local);
+    strcpy(evento[tamanho_events].local, local);
 
     printf("Insira a categoria: ");
     scanf(" %s",categoria);
-    strcpy(evento[n].categoria, categoria);
+    strcpy(evento[tamanho_events].categoria, categoria);
 
     printf("Insira a vaga: ");
     scanf(" %d",&vagas);
-    evento[n].vagas = vagas;
+    evento[tamanho_events].vagas = vagas;
 
-    evento[n].vagasDisponiveis = vagas;
+    evento[tamanho_events].vagasDisponiveis = vagas;
 
-    evento[n].codigo = codigo;
+    evento[tamanho_events].codigo = codigo;
     
-    n++;
+    tamanho_events++;
 
-    return n;
+    return tamanho_events;
 };
 
 void show_event(struct Evento evento){
@@ -377,13 +377,33 @@ int delete_participant(
 ){
 
     int event_index = search_event_by_code(events,tamanho_events,participants[index].eventoCodigo);
-    if((events[event_index].vagasDisponiveis != events[event_index].vagas) && (event_index!=9999)){
-        events[event_index].vagasDisponiveis++;
-    }
+    // if((events[event_index].vagasDisponiveis != events[event_index].vagas) && (event_index!=9999)){
+    events[event_index].vagasDisponiveis++;
+    //}
     
     for(int i = index; i < tamanho_participants; i ++){
         participants[i] = participants[i+1];
     }
     tamanho_participants--;
+    return tamanho_participants;
+}
+
+void save_events_to_file(char filepath[], struct Evento events[]){
+    // TO DO
+}
+
+int read_events_files(char filepath[], struct Evento events[]){
+    int tamanho_events = 0;
+    // events = file;
+    return tamanho_events;
+}
+
+void save_participants_to_file(char filepath[], struct Participante participants[]){
+    // TO DO
+}
+
+int read_participants_file(char filepath[], struct Participante participants[]){
+    int tamanho_participants = 0;
+    // participants = file;
     return tamanho_participants;
 }

@@ -59,7 +59,8 @@ void main(void){
         "Listar Participantes",
         "Buscar Participante",
         "O que deseja fazer com o participante selecionado?",
-        "O que voce deseja editar?"
+        "O que voce deseja editar?",
+        "Novo Menu"
     };
 
     // CRIANDO AS OPCOES DE CADA MENU EM ORDEM
@@ -74,7 +75,8 @@ void main(void){
         {"Listar todos os participantes","Filtrar por evento","Filtrar por instituicao","Voltar"},
         {"Consultar por codigo","Consultar por nome","Consultar por email","Voltar"},
         {"Cancelar inscricao do participante","Editar dados do participante","Trocar evento do participante","Voltar"},
-        {"Nome", "Email", "Instituicao", "Voltar"}
+        {"Nome", "Email", "Instituicao", "Voltar"},
+        {"Voltar"}
     };
     
     // DEFININDO A QUANTIDADE DE OPCOES POR MENU

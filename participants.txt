@@ -1,0 +1,8 @@
+1,Roberto,roberto@gmail,UFSC,2
+2,Adriano,adriano@gmail,UFSC,2
+3,Juninho,juninho@gmail,UFSC,2
+4,Ulisses,ulisses@hotmail,UEA,1
+5,Adalberto,adalberto@hotmail,UFAM,1
+6,Bruna,bruna@franq,FRANQ,4
+7,Antonio,antonio@franq,FRANQ,4
+8,Felisberto,felisberto@hotmail,IFAM,1
