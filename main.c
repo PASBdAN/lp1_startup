@@ -12,6 +12,10 @@ int navigate_menu(Menu* menu);
 
 void main(void){
 
+    // DEFININDO VARIÁVEIS DE EVENTOS
+    struct Evento eventos[100];
+    int ultima_posicao_evento = 0;
+
     // DEFININDO VARIÁVEIS PARA NAVEGAÇÃO DOS MENUS
     int current_menu_id = 1, current_selection = 0;
     void* temp;
@@ -114,43 +118,16 @@ void main(void){
                     events_menu
                 );
                 switch (current_selection){
-                    case 0:
-                        printf("Registrar um evento\n");
-                        struct Evento event = {
-                            events_list_menu->options_size,
-                            "Teste",
-                            "Data",
-                            "local",
-                            "categoria",
-                            20,
-                            20
-                        };
-                        temp = realloc(events_list_menu->options, sizeof(MenuOption)*(events_list_menu->options_size + 1));
-                        if(temp!=NULL){
-                            events_list_menu->options = temp;
-                            char description[100] = "", codigo[10];
-                            itoa(event.codigo,codigo,10);
-                            strcat(description, codigo);
-                            strcat(description, " - ");
-                            strcat(description, event.nome);
-                            strcat(description, " - ");
-                            strcat(description, event.categoria);
-                            events_list_menu->options[events_list_menu->options_size].description = description;
-                            events_list_menu->options[events_list_menu->options_size].event = event;
-                            events_list_menu->options_size++;
-                        }
-                        // events_list_menu->options = realloc(events_list_menu->options,sizeof(events_list_menu->options)+sizeof(MenuOption));
+                    case 0: // CADASTRAR EVENTOS
+                        ultima_posicao_evento = inserir_evento(eventos,ultima_posicao_evento);
+                        show_menu(events_menu);
                         break;
-                    case 1: // NAVEGA PARA O MENU DE LISTA DE EVENTOS
-                        current_menu_id = events_list_menu->id;
-                        show_menu(events_list_menu);
+                    case 1: // LISTAR TODOS OS EVENTOS
+                        mostrar_eventos(eventos,ultima_posicao_evento);
                         break;
-                    case 2:
-                        current_menu_id = events_search_menu->id;
-                        show_menu(events_search_menu);
+                    case 2: // BUSCAR UM EVENTO POR CODIGO OU NOME
                         break;
-                    case 3: 
-                        printf("Delete event\n");
+                    case 3: // DELETAR UM EVENTO POR CODIGO OU NOME
                         break;
                     case 4: // NAVEGA PARA O MENU PRINCIPAL
                         current_menu_id = main_menu->id;
@@ -229,21 +206,6 @@ void main(void){
                         show_menu(events_menu);
                         break;
                     default:
-                        break;
-                }
-                break;
-
-            case 6: // MOSTRA MENU DE LISTA DE EVENTOS
-                current_selection = navigate_menu(
-                    events_list_menu
-                );
-                switch (current_selection){
-                    case 0: // NAVEGA PARA O MENU DE EVENTOS
-                        current_menu_id = events_menu->id;
-                        show_menu(events_menu);
-                        break;
-                    default:
-                        printf("Motra evento 1\n");
                         break;
                 }
                 break;

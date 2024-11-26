@@ -64,3 +64,33 @@ int navigate_menu(
         }
     }
 };
+
+int inserir_evento(
+    struct Evento evento[],
+    int n
+){
+    printf("\e[1;1H\e[2J");
+    char nome[100], data[20];
+    printf("Insira o nome do evento: ");
+    scanf(" %s",nome);
+    strcpy(evento[n].nome, nome);
+    printf("Insira uma data: ");
+    scanf(" %s",data);
+    strcpy(evento[n].data, data);
+    n++;
+    return n;
+};
+
+void mostrar_eventos(
+    struct  Evento evento[],
+    int n    
+){
+    for(int i = 0; i < n;i++){
+        printf(
+            "%d - %s %s\n",
+            i+1,
+            evento[i].nome,
+            evento[i].data
+        );
+    }
+};

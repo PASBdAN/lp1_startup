@@ -30,7 +30,6 @@ void mostrar_eventos(
 
 int main(){
     struct Evento eventos[100];
-    char nome[100];
     int ultima_posicao = 0;
 
     ultima_posicao = inserir_evento(eventos, ultima_posicao);
