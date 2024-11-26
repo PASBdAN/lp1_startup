@@ -19,8 +19,6 @@ struct Participante{
 typedef struct{
     char* description;
     int menu_id;
-    struct Evento event;
-    struct Participante participant;
 }MenuOption;
 
 typedef struct{
