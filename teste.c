@@ -5,7 +5,7 @@
 // #include "functions.c"
 #include "defines.h"
 
-int inserir_evento(
+int insert_event(
     struct Evento evento[],
     int n
 ){
@@ -76,7 +76,7 @@ int main(){
     struct Evento eventos[100];
     int ultima_posicao = 0;
 
-    ultima_posicao = inserir_evento(eventos, ultima_posicao);
+    ultima_posicao = insert_event(eventos, ultima_posicao);
 
     // ultima_posicao = inserir_evento(eventos, ultima_posicao);
 

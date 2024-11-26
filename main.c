@@ -12,32 +12,34 @@ void show_menu(Menu* menu);
 
 int navigate_menu(Menu* menu);
 
-int inserir_evento(struct Evento eventos[], int n);
+int insert_event(struct Evento eventos[], int n);
 
-int buscar_evento_por_nome(struct Evento eventos[], int tamanho);
+int search_event_by_name(struct Evento eventos[], int tamanho, char nome[]);
 
-int buscar_evento_por_codigo(struct Evento eventos[], int tamanho);
+int search_event_by_code(struct Evento eventos[], int tamanho, int codigo);
 
-int deletar_evento(struct Evento eventos[], int index, int tamanho);
+int delete_event(struct Evento eventos[], int index, int tamanho);
 
-void mostrar_evento(struct Evento evento);
+void show_event(struct Evento evento);
 
-void listar_eventos(struct Evento eventos[],int n);
+void list_events(struct Evento eventos[],int n);
 
-#define MAX_OPTIONS 10
-#define MAX_MENUS 10
+#define MAX_OPTION_QNT 15
+#define MAX_MENU_QNT 15
+#define MAX_EVENTOS 100
+#define MAX_PARTICIPANTES 100
 
 void main(void){
 
     // DEFININDO VARIÁVEIS DE EVENTOS
     // TO DO: LER EVENTOS DE ARQUIVO
-    struct Evento eventos[100];
+    struct Evento events[MAX_EVENTOS];
     int ultima_posicao_evento = 0;
     int current_event_index = 9999;
 
     // DEFININDO VARIÁVEIS DE PARTICIPANTES
     //TO DO: LER PARTICIPANTES DE ARQUIVO
-    struct Participante participantes[100];
+    struct Participante participants[MAX_PARTICIPANTES];
     int ultima_posicao_participante = 0;
     int current_participant_index = 9999;
 
@@ -53,25 +55,31 @@ void main(void){
         "Menu de Relatorios",
         "Buscar Eventos",
         "O que deseja fazer com o evento encontrado?",
-        "O que voce deseja editar?"
+        "O que voce deseja editar?",
+        "Listar Participantes",
+        "Consultar Participante",
+        "O que deseja fazer com o participante selecionado?"
     };
 
     // CRIANDO AS OPCOES DE CADA MENU EM ORDEM
-    char* all_options[MAX_MENUS][MAX_OPTIONS] = {
+    char* all_options[MAX_MENU_QNT][MAX_OPTION_QNT] = {
         {"Modulo de eventos", "Modulo de participantes", "Modulo de relatorios", "Fechar programa"},
         {"Cadastrar novo evento", "Listar eventos", "Buscar evento", "Voltar"},
-        {"Inscrever participante em um evento", "Listar participantes de um evento", "Cancelar inscricao", "Consultar CPF/Codigo", "Voltar"},
+        {"Registar um participante", "Listar participantes", "Consultar participante", "Voltar"},
         {"Ranquear eventos por numero de inscritos", "Participantes por instituicao", "Listar eventos por categoria", "Listar eventos ordenados por data", "Voltar"},
         {"Buscar por nome", "Buscar por codigo", "Voltar"},
         {"Deletar evento", "Editar evento", "Voltar"},
-        {"Nome", "Data", "Local", "Categoria", "Vagas", "Voltar"}
+        {"Nome", "Data", "Local", "Categoria", "Vagas", "Voltar"},
+        {"Listar todos os participantes","Filtrar por evento","Filtrar por instituicao","Voltar"},
+        {"Consultar por codigo","Consultar por nome","Consultar por email"},
+        {"Cancelar inscricao do participante","Editar dados do participante","Trocar evento do participante","Voltar"}
     };
     
     // DEFININDO A QUANTIDADE DE OPCOES POR MENU
     int menu_qnt = sizeof(all_titles)/sizeof(all_titles[0]);
     int *options_quantities = malloc(menu_qnt*sizeof(int));
     for(int i = 0; i < menu_qnt; i++){
-        for(int j = 0; j<MAX_OPTIONS;j++){
+        for(int j = 0; j<MAX_OPTION_QNT;j++){
             if(all_options[i][j]==NULL){
                 options_quantities[i] = j;
                 break;
@@ -124,13 +132,13 @@ void main(void){
                 );
                 switch (current_selection){
                     case 0: // CADASTRAR EVENTOS
-                        ultima_posicao_evento = inserir_evento(eventos,ultima_posicao_evento);
+                        ultima_posicao_evento = insert_event(events,ultima_posicao_evento);
                         show_menu(&all_menus[1]);
                         printf("Evento criado com sucesso!\n");
                         break;
                     case 1: // LISTAR TODOS OS EVENTOS
                         show_menu(&all_menus[1]);
-                        listar_eventos(eventos,ultima_posicao_evento);
+                        list_events(events,ultima_posicao_evento);
                         break;
                     case 2: // BUSCAR UM EVENTO
                         current_menu_id = all_menus[4].id;
@@ -150,19 +158,22 @@ void main(void){
                     &all_menus[current_menu_id-1]
                 );
                 switch (current_selection){
-                    case 0:
-                        printf("Increver um participante em um evento\n");
+                    case 0: // INSERE UM PARTICIPANTE
+                        int success_flag = ultima_posicao_participante;
+                        ultima_posicao_participante = insert_participant(participants,ultima_posicao_participante,events,ultima_posicao_evento);
+                        if(success_flag!=ultima_posicao_participante){
+                            show_menu(&all_menus[current_menu_id-1]);
+                            printf("Participante registrado com sucesso!\n");
+                        }
                         break;
-                    case 1:
-                        printf("Listar participantes de um evento\n");
+                    case 1: // NAVEGA PARA O MENU DE LISTAR PARTICIPANTES
+                        current_menu_id = all_menus[7].id;
+                        show_menu(&all_menus[7]);
                         break;
-                    case 2:
-                        printf("Cancelar inscricao\n");
+                    case 2: // NAVEGA PARA O MENU DE BUSCAR PARTICIPANTE
+                        printf("Consultar um participante\n");
                         break;
-                    case 3:
-                        printf("Consultar inscricao por CPF/codigo\n");
-                        break;
-                    case 4: // NAVEGA PARA O MENU PRINCIPAL
+                    case 3: // NAVEGA PARA O MENU PRINCIPAL
                         current_menu_id = all_menus[0].id;
                         show_menu(&all_menus[0]);
                         break;
@@ -203,23 +214,29 @@ void main(void){
                 );
                 switch (current_selection){
                     case 0: // BUSCA EVENTO POR NOME E NAVEGA PARA MENU DE DELETAR OU EDITAR
-                        current_event_index = buscar_evento_por_nome(eventos, ultima_posicao_evento);
+                        char nome[100];
+                        printf("Insira o nome do evento: ");
+                        scanf(" %s",nome);
+                        current_event_index = search_event_by_name(events, ultima_posicao_evento,nome);
                         if(current_event_index!=9999){
                             current_menu_id = all_menus[5].id;
                             show_menu(&all_menus[5]);
                             printf("Evento encontrado: ");
-                            mostrar_evento(eventos[current_event_index]);
+                            show_event(events[current_event_index]);
                         } else {
                             printf("Nao foi encontrado nenhum evento com esse nome!\n");
                         };
                         break;
                     case 1: // BUSCA EVENTO POR CODIGO E NAVEGA PARA MENU DE DELETAR OU EDITAR
-                        current_event_index = buscar_evento_por_codigo(eventos, ultima_posicao_evento);
+                        int codigo;
+                        printf("Insira o codigo do evento: ");
+                        scanf(" %d",&codigo);
+                        current_event_index = search_event_by_code(events, ultima_posicao_evento, codigo);
                         if(current_event_index!=9999){
                             current_menu_id = all_menus[5].id;
                             show_menu(&all_menus[5]);
                             printf("Evento encontrado: ");
-                            mostrar_evento(eventos[current_event_index]);
+                            show_event(events[current_event_index]);
                         } else{
                             printf("Nao foi encontrado nenhum evento com esse codigo!\n");
                         };
@@ -237,10 +254,10 @@ void main(void){
                 current_selection = navigate_menu(
                     &all_menus[current_menu_id-1]
                 );
-                mostrar_evento(eventos[current_event_index]);
+                show_event(events[current_event_index]);
                 switch (current_selection){
                     case 0: // DELETA EVENTO E NAVEGA PARA MENU DE BUSCA DE EVENTOS
-                        deletar_evento(eventos,current_event_index,ultima_posicao_evento);
+                        delete_event(events,current_event_index,ultima_posicao_evento);
                         ultima_posicao_evento--;
                         current_menu_id = all_menus[4].id;
                         show_menu(&all_menus[4]);
@@ -267,10 +284,41 @@ void main(void){
                     show_menu(&all_menus[5]);
                     break;
                 }
-                mostrar_evento(eventos[current_event_index]);
-                editar_evento(eventos, current_event_index, current_selection);
+                show_event(events[current_event_index]);
+                edit_event(events, current_event_index, current_selection);
                 printf("Coluna editada com sucesso!\n");
-            
+
+            case 8: // MOSTRA MENU DE LISTAR PARTICIPANTES
+                current_selection = navigate_menu(
+                    &all_menus[current_menu_id-1]
+                );
+                // {"Listar todos os participantes","Filtrar por evento","Filtrar por instituicao","Voltar"}
+                switch(current_selection) {
+                    case 0: // Listar todos os participantes
+                        show_menu(&all_menus[current_menu_id-1]);
+                        list_participants(participants,ultima_posicao_participante,NULL,0);
+                        break;
+                    case 1: // Filtrar por evento
+                        int temp_code;
+                        printf("Insira o codigo do evento: ");
+                        scanf(" %d", &temp_code);
+                        list_participants(participants,ultima_posicao_participante,NULL,temp_code);
+                        break;
+                    case 2: // Filtrar por instituicao
+                        char temp_insti[100];
+                        printf("Insira o nome da instituicao: ");
+                        scanf(" %s",temp_insti);
+                        list_participants(participants,ultima_posicao_participante,temp_insti,0);
+                        break;
+                    case 3: // Voltar
+                        current_menu_id = all_menus[2].id;
+                        show_menu(&all_menus[2]);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+
             default:
                 break;
         }

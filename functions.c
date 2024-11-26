@@ -78,7 +78,7 @@ int navigate_menu(
     }
 };
 
-int inserir_evento(
+int insert_event(
     struct Evento evento[],
     int n
 ){
@@ -123,7 +123,7 @@ int inserir_evento(
     return n;
 };
 
-void mostrar_evento(struct Evento evento){
+void show_event(struct Evento evento){
     printf(
         "%d - %s %s %s %s %d %d\n",
         evento.codigo,
@@ -136,7 +136,7 @@ void mostrar_evento(struct Evento evento){
     );
 };
 
-void listar_eventos(
+void list_events(
     struct  Evento evento[],
     int n    
 ){
@@ -144,37 +144,31 @@ void listar_eventos(
         printf("Nao tem nenhum evento cadastrado!\n");
     }
     for(int i = 0; i < n; i++){
-        mostrar_evento(evento[i]);
+        show_event(evento[i]);
     }
 };
 
-int buscar_evento_por_codigo(struct Evento eventos[], int tamanho){
-    int codigo;
-    printf("Insira o codigo do evento: ");
-    scanf(" %d",&codigo);
+int search_event_by_code(struct Evento eventos[], int tamanho, int codigo){
     for(int i = 0; i< tamanho;i++){
         if(eventos[i].codigo == codigo){
-            mostrar_evento(eventos[i]);
+            show_event(eventos[i]);
             return i;
         }
     }
     return 9999;
 };
 
-int buscar_evento_por_nome(struct Evento eventos[], int tamanho){
-    char nome[100];
-    printf("Insira o nome do evento: ");
-    scanf(" %s",nome);
+int search_event_by_name(struct Evento eventos[], int tamanho, char nome[]){
     for(int i = 0; i< tamanho;i++){
         if(strcmp(eventos[i].nome,nome) == 0){
-            mostrar_evento(eventos[i]);
+            show_event(eventos[i]);
             return i;
         }
     }
     return 9999;
 };
 
-void editar_evento(struct Evento eventos[], int index, int column){
+void edit_event(struct Evento eventos[], int index, int column){
     char nome[100], data[20], local[100], categoria[50];
     int vagas;
     switch(column){
@@ -206,7 +200,7 @@ void editar_evento(struct Evento eventos[], int index, int column){
     }
 }
 
-int deletar_evento(
+int delete_event(
     struct Evento eventos[],
     int index,
     int tamanho
@@ -216,4 +210,118 @@ int deletar_evento(
     }
     tamanho--;
     return tamanho;
+}
+
+int insert_participant(
+    struct Participante participant[],
+    int tamanho_participants,
+    struct Evento events[],
+    int tamanho_events
+){
+    char nome[100], email[100], instituicao[100];
+    int eventoCodigo, codigo = 0;
+
+    printf("Insira o codigo do evento do participante: ");
+    scanf(" %d",&eventoCodigo);
+    int event_index = search_event_by_code(events,tamanho_events,eventoCodigo);
+    if(event_index==9999){
+        printf("O evento solicitado não existe!\n");
+        return tamanho_participants;
+    }
+    if(events[event_index].vagasDisponiveis == 0){
+        printf("O evento nao tem vagas disponiveis para registrar esse participante!\n");
+        return tamanho_participants;
+    }
+    events[event_index].vagasDisponiveis--;
+    participant[tamanho_participants].eventoCodigo = eventoCodigo;
+
+    // LOOP PARA INSERIR UM CODIGO UNICO
+    for(int i = 0; i < tamanho_participants; i++){
+        if(participant[i].codigo >= codigo){
+            codigo = participant[i].codigo;
+        }
+    }
+    codigo++;
+
+    printf("Insira o nome do participante: ");
+    scanf(" %s",nome);
+    strcpy(participant[tamanho_participants].nome, nome);
+
+    printf("Insira o email do participante: ");
+    scanf(" %s",email);
+    strcpy(participant[tamanho_participants].email, email);
+
+    printf("Insira a instituicao do participante: ");
+    scanf(" %s",instituicao);
+    strcpy(participant[tamanho_participants].instituicao, instituicao);
+
+    participant[tamanho_participants].codigo = codigo;
+    
+    tamanho_participants++;
+
+    return tamanho_participants;
+};
+
+void show_participant(struct Participante participant){
+    printf(
+        "%d - %s %s %s %d\n",
+        participant.codigo,
+        participant.nome,
+        participant.email,
+        participant.instituicao,
+        participant.eventoCodigo
+    );
+};
+
+void list_participants(
+    struct  Participante participants[],
+    int n,
+    char instituicao[],
+    int eventoCodigo
+){
+    if(n==0){
+        printf("Nao tem nenhum participante cadastrado!\n");
+    }
+    for(int i = 0; i < n; i++){
+        if(instituicao!=NULL){
+            if(strcmp(participants[i].instituicao,instituicao) == 0){
+                show_participant(participants[i]);
+            }
+            continue;
+        }
+        if(eventoCodigo!=0){
+            if(participants[i].eventoCodigo == eventoCodigo){
+                show_participant(participants[i]);
+            }
+            continue;
+        }
+        show_participant(participants[i]);
+    }
+};
+
+void edit_participant(struct Participante participants[], int index, int column){
+    char nome[100], email[100], instituicao[100];
+    int eventoCodigo;
+    switch(column){
+        case 0:
+            printf("Insira o novo nome: ");
+            scanf(" %s", nome);
+            strcpy(participants[index].nome,nome);
+            break;
+        case 1:
+            printf("Insira a nova email: ");
+            scanf(" %s", email);
+            strcpy(participants[index].email,email);
+            break;
+        case 2:
+            printf("Insira o novo instituicao: ");
+            scanf(" %s", instituicao);
+            strcpy(participants[index].instituicao,instituicao);
+            break;
+        case 3:
+            printf("Insira o codigo do novo evento: ");
+            scanf(" %d", &eventoCodigo);
+            participants[index].eventoCodigo = eventoCodigo;
+            break;
+    }
 }
