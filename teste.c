@@ -8,12 +8,25 @@ int inserir_evento(
     struct Evento evento[],
     int n
 ){
-    char nome[100], data[20];
+    char nome[100], data[20]
+    char local[100], categoria[50];
+    int vagas, vagasDisponiveis;
+    printf("Insira um nome: ");
     scanf(" %s",nome);
     strcpy(evento[n].nome, nome);
     printf("Insira uma data: ");
     scanf(" %s",data);
     strcpy(evento[n].data, data);
+    printf("Insira o local: ");
+    scanf(" %s",local);
+    strcpy(evento[n].local, local);
+    printf("Insira a categoria: ");
+    scanf(" %s",categoria);
+    strcpy(categoria[n].categoria, categoria);
+    printf("Insira a vaga: ");
+    scanf(" %s",vagas);
+    strcpy(vagas[n].vagas, vagas);
+    
     n++;
     return n;
 };
@@ -23,8 +36,11 @@ void mostrar_eventos(
     int n    
 ){
     for(int i = 0; i<= n;i++){
-        printf("O nome do evento %d e: %s\n",i+1,evento[i].nome);
-        printf("A data do evento %d e: %s\n",i+1,evento[i].data);
+        printf("O nome do evento %d eh: %s\n",i+1,evento[i].nome);
+        printf("A data do evento %d eh: %s\n",i+1,evento[i].data);
+        printf("O local do evento %d eh: %s\n",i+1,evento[i].local);
+        printf("A categoria do evento %d eh: %s\n",i+1,evento[i].categoria);
+        printf("A vaga do evento %d eh: %s\n",i+1,evento[i].vagas);
     }
 }
 
