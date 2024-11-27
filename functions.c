@@ -393,9 +393,45 @@ void save_events_to_file(char filepath[], struct Evento events[]){
 }
 
 int read_events_files(char filepath[], struct Evento events[]){
-    int tamanho_events = 0;
-    // events = file;
-    return tamanho_events;
+    FILE *arquivo;
+    char linha[500], *palavra;
+    int column = 0, i = 0;
+
+    arquivo = fopen(filepath,"r");
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        palavra = strtok(linha,",");
+        while(palavra!=NULL){
+            switch(column){
+                case 0:
+                    events[i].codigo = atoi(palavra);
+                    break;
+                case 1:
+                    strcpy(events[i].nome,palavra);
+                    break;
+                case 2:
+                    strcpy(events[i].data, palavra);
+                    break;
+                case 3:
+                    strcpy(events[i].local, palavra);
+                    break;
+                case 4:
+                    strcpy(events[i].categoria, palavra);
+                    break;
+                case 5:
+                    events[i].vagas = atoi(palavra);
+                    break;
+                case 6:
+                    events[i].vagasDisponiveis = atoi(palavra);
+                default:
+                    break;
+            }
+            palavra = strtok(NULL,",");
+            column++;
+        }
+        column = 0;
+        i++;
+    }
+    return i;
 }
 
 void save_participants_to_file(char filepath[], struct Participante participants[]){
@@ -403,7 +439,40 @@ void save_participants_to_file(char filepath[], struct Participante participants
 }
 
 int read_participants_file(char filepath[], struct Participante participants[]){
-    int tamanho_participants = 0;
-    // participants = file;
-    return tamanho_participants;
+    FILE *arquivo;
+    char linha[500], *palavra;
+    int column = 0, i = 0;
+
+    arquivo = fopen(filepath,"r");
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        printf("%s", linha);
+        palavra = strtok(linha,",");
+        while(palavra!=NULL){
+            printf("%s",palavra);
+            switch(column){
+                case 0:
+                    participants[i].codigo = atoi(palavra);
+                    break;
+                case 1:
+                    strcpy(participants[i].nome,palavra);
+                    break;
+                case 2:
+                    strcpy(participants[i].email, palavra);
+                    break;
+                case 3:
+                    strcpy(participants[i].instituicao, palavra);
+                    break;
+                case 4:
+                    participants[i].eventoCodigo = atoi(palavra);
+                    break;
+                default:
+                    break;
+            }
+            palavra = strtok(NULL,",");
+            column++;
+        }
+        column = 0;
+        i++;
+    }
+    return i;
 }

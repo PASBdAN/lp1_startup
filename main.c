@@ -18,11 +18,30 @@ int search_event_by_name(struct Evento eventos[], int tamanho, char nome[]);
 
 int search_event_by_code(struct Evento eventos[], int tamanho, int codigo);
 
-int delete_event(struct Evento eventos[], int index, int tamanho);
-
 void show_event(struct Evento evento);
 
 void list_events(struct Evento eventos[],int n);
+
+void edit_event(struct Evento eventos[], int index, int column);
+
+int delete_event(struct Evento eventos[], int index, int tamanho);
+
+int insert_participant(struct Participante participant[],int tamanho_participants,struct Evento events[],int tamanho_events);
+
+int search_participant_by_code(struct Participante participants[], int tamanho, int codigo);
+
+int search_participant_by_name(struct Participante participants[], int tamanho, char nome[]);
+
+int search_participant_by_email(struct Participante participants[], int tamanho, char email[]);
+
+void show_participant(struct Participante participant);
+
+void list_participants(struct  Participante participants[],int n,char instituicao[],int eventoCodigo);
+
+void edit_participant(struct Participante participants[], int index, int column, struct Evento events[], int tamanho_events);
+
+int delete_participant(struct Participante participants[],int tamanho_participants,int index,struct Evento events[],int tamanho_events);
+
 
 #define MAX_OPTION_QNT 15
 #define MAX_MENU_QNT 15
@@ -34,13 +53,13 @@ void main(void){
     // DEFININDO VARIÁVEIS DE EVENTOS
     // TO DO: LER EVENTOS DE ARQUIVO
     struct Evento events[MAX_EVENTOS];
-    int ultima_posicao_evento = 0;
+    int ultima_posicao_evento = read_events_files("events.txt",events);
     int current_event_index = 9999;
 
     // DEFININDO VARIÁVEIS DE PARTICIPANTES
     //TO DO: LER PARTICIPANTES DE ARQUIVO
     struct Participante participants[MAX_PARTICIPANTES];
-    int ultima_posicao_participante = 0;
+    int ultima_posicao_participante = read_participants_file("participants.txt",participants);
     int current_participant_index = 9999;
 
     // DEFININDO VARIÁVEIS PARA NAVEGAÇÃO DOS MENUS

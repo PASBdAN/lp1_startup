@@ -5,83 +5,82 @@
 // #include "functions.c"
 #include "defines.h"
 
-int insert_event(
-    struct Evento evento[],
-    int n
-){
-    char nome[100], data[20];
-    char local[100], categoria[50];
-    int vagas, vagasDisponiveis, codigo = 0;
-
-    // LOOP PARA INSERIR UM CODIGO UNICO
-    for(int i = 0; i < n; i++){
-        if(evento[i].codigo >= codigo){
-            codigo = evento[i].codigo;
-        }
-    }
-    codigo++;
-
-    printf("Insira um nome: ");
-    scanf(" %s",nome);
-    strcpy(evento[n].nome, nome);
-
-    printf("Insira uma data: ");
-    scanf(" %s\n",data);
-    strcpy(evento[n].data, data);
-
-    printf("Insira o local: ");
-    scanf(" %s",local);
-    strcpy(evento[n].local, local);
-
-    printf("Insira a categoria: ");
-    scanf(" %s",categoria);
-    strcpy(evento[n].categoria, categoria);
-
-    printf("Insira a vaga: ");
-    scanf(" %d",&vagas);
-    evento[n].vagas = vagas;
-
-    evento[n].vagasDisponiveis = vagas;
-
-    evento[n].codigo = codigo;
-    
-    n++;
-    return n;
+void show_event(struct Evento evento){
+    printf(
+        "%d - %s %s %s %s %d %d\n",
+        evento.codigo,
+        evento.nome,
+        evento.data,
+        evento.local,
+        evento.categoria,
+        evento.vagas,
+        evento.vagasDisponiveis
+    );
 };
 
-void mostrar_eventos(
-    struct  Evento evento[],
-    int n    
-){
-    for(int i = 0; i < n; i++){
-        int s_nome = strlen(evento[i].nome);
-        int s_data = strlen(evento[i].data);
-        int s_local = strlen(evento[i].local);
-        int s_categoria = strlen(evento[i].categoria);
-        printf("CODIGO - NOME DATA LOCAL CATEGORIA VAGAS VAGAS_DISPONIVEIS\n");
-        printf(
-            "%d - %s %s %s %s %d %d\n",
-            evento[i].codigo,
-            evento[i].nome,
-            evento[i].data,
-            evento[i].local,
-            evento[i].categoria,
-            evento[i].vagas,
-            evento[i].vagasDisponiveis
-        );
+int teste() {
+    char str[] = "Esta é uma string de exemplo";  // String original
+    char *token;  // Ponteiro para armazenar cada token
+
+    // A primeira chamada de strtok, passando a string e o delimitador
+    token = strtok(str, " ");  // Delimitador: espaço em branco
+
+    // Enquanto houver tokens, continue separando
+    while (token != NULL) {
+        printf("Token: %s\n", token);
+        token = strtok(NULL, " ");  // Chamada subsequente, passando NULL para continuar de onde parou
+    }
+
+    return 0;
+}
+
+void r_events_to_file(char filepath[], struct Evento events[]){
+    FILE *arquivo;
+    char linha[500], *palavra;
+    int column = 0, i = 0;
+
+    arquivo = fopen(filepath,"r");
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        printf("%s", linha);
+        palavra = strtok(linha,",");
+        while(palavra!=NULL){
+            printf("%s",palavra);
+            switch(column){
+                case 0:
+                    events[i].codigo = atoi(palavra);
+                    break;
+                case 1:
+                    strcpy(events[i].nome,palavra);
+                    break;
+                case 2:
+                    strcpy(events[i].data, palavra);
+                    break;
+                case 3:
+                    strcpy(events[i].local, palavra);
+                    break;
+                case 4:
+                    strcpy(events[i].categoria, palavra);
+                    break;
+                case 5:
+                    events[i].vagas = atoi(palavra);
+                    break;
+                case 6:
+                    events[i].vagasDisponiveis = atoi(palavra);
+                default:
+                    break;
+            }
+            palavra = strtok(NULL,",");
+            column++;
+        }
+        column = 0;
+        i++;
     }
 }
 
-int main(){
-    struct Evento eventos[100];
-    int ultima_posicao = 0;
-
-    ultima_posicao = insert_event(eventos, ultima_posicao);
-
-    // ultima_posicao = inserir_evento(eventos, ultima_posicao);
-
-    // ultima_posicao = inserir_evento(eventos, ultima_posicao);
-
-    mostrar_eventos(eventos,ultima_posicao);
-    return 0;
+int main() {
+    char filepath[] = "events.txt";
+    struct Evento events[100];
+    r_events_to_file(filepath,events);
+    show_event(events[1]);
+    // teste();
 }
